@@ -11,5 +11,9 @@ ActiveRecord::Base.establish_connection(YAML::load(File.open('./db/config.yml'))
 RSpec.configure do |config|
   config.after(:each) do
     Product.all.each { |product| product.destroy }
+    Customer.all.each { |customer| customer.destroy }
+    Cart.all.each { |cart| cart.destroy }
+    Checkout.all.each { |checkout| checkout.destroy }
+    Cashier.all.each { |cashier| cashier.destroy }
   end
 end

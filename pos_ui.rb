@@ -49,24 +49,28 @@ def checkout_products
   puts "\nHow many of these would you like to buy?"
   quantity = gets.chomp
   product = Product.find_or_create_by({name: product_name, price: product_price})
-  cart = Cart.create({product_id: product.id, quantity: quantity, checkout_id: @checkout.id })
-  running_cost = []
-  running_cost << product.price
-  # puts "Press 'a' to add another product or 'b' to pay."
-  # user_input = gets.chomp
-  # if user_input == 'a'
-  #   checkout_products
-  # elsif user_input == 'b'
-  #   finish_checkout
-  # else
-  #   puts "Invalid Option"
-  #   main_menu
-  # end
+  @cart = Cart.create({product_id: product.id, quantity: quantity, checkout_id: @checkout.id })
+  @running_cost = []
+  @running_cost << product.price * @cart.quantity
+  puts "Press 'a' to add another product or 'b' to pay."
+  user_input = gets.chomp
+  if user_input == 'a'
+    checkout_products
+  elsif user_input == 'b'
+    finish_checkout
+  else
+    puts "Invalid Option"
+    main_menu
+  end
 end
 
 def finish_checkout
   puts "This is your receipt:"
-
+  final_cost = @running_cost.inject(:+)
+  @checkout.carts.each do |cart|
+    puts "##{cart.quantity} - #{cart.product.name} - $#{cart.product.price}"
+  end
+  puts "#{@checkout.receipt_total}"
 end
 
 def add_product
