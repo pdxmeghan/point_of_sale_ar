@@ -3,6 +3,8 @@ require './lib/product'
 require './lib/cashier'
 require './lib/cart'
 require './lib/checkout'
+require './lib/customer'
+
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -31,31 +33,35 @@ end
 def checkout
   puts "Who's your cashier?"
   cashier_name = gets.chomp
-  @cashier = Cashier.find_or_create_by({name: cashier_name})
+  cashier = Cashier.find_or_create_by({name: cashier_name})
   puts "What is the customer's name?"
   customer_name = gets.chomp
-  @customer = Customer.find_or_create_by({name: customer_name})
-
+  customer = Customer.find_or_create_by({name: customer_name})
+  @checkout = Checkout.create({customer_id: customer.id, cashier_id: cashier.id})
   checkout_products
 end
 
 def checkout_products
-  puts "What are you buying?"
+  puts "\nWhat are you buying?"
   product_name = gets.chomp
-  puts "How much does it cost?"
+  puts "\nHow much does it cost?"
   product_price = gets.chomp
+  puts "\nHow many of these would you like to buy?"
+  quantity = gets.chomp
   product = Product.find_or_create_by({name: product_name, price: product_price})
-
-  puts "Press 'a' to add another product or 'b' to pay."
-  user_input = gets.chomp
-  if user_input == 'a'
-    checkout_products
-  elsif user_input == 'b'
-    finish_checkout
-  else
-    puts "Invalid Option"
-    main_menu
-  end
+  cart = Cart.create({product_id: product.id, quantity: quantity, checkout_id: @checkout.id })
+  running_cost = []
+  running_cost << product.price
+  # puts "Press 'a' to add another product or 'b' to pay."
+  # user_input = gets.chomp
+  # if user_input == 'a'
+  #   checkout_products
+  # elsif user_input == 'b'
+  #   finish_checkout
+  # else
+  #   puts "Invalid Option"
+  #   main_menu
+  # end
 end
 
 def finish_checkout
