@@ -12,12 +12,10 @@ ActiveRecord::Base.establish_connection(development_configuration)
 
 def main_menu
   loop do
-    puts "Press 'p' to add a product\nPress 'x' to exit\nPress 't' to go the the checkout\nPress 'c' to add a cashier"
+    puts "Press 'x' to exit\nPress 't' to go the the checkout\nPress 'e' to see how many customers a cashier has."
     user_input = gets.chomp
-    if user_input == 'p'
-      add_product
-    elsif user_input == 'c'
-      add_cashier
+    if user_input == 'e'
+      view_cashier
     elsif user_input == 't'
       checkout
     elsif user_input == 'x'
@@ -87,6 +85,19 @@ def add_cashier
   cashier_name = gets.chomp
   new_cashier = Cashier.create({name: cashier_name})
   puts "GRACIAS! Cashier has been added to the database."
+end
+
+def view_cashier
+  puts "\n\n"
+  Cashier.list_cashiers
+  puts "What cashier do you want to see?\n\n"
+  user_input = gets.chomp
+  cashier = Cashier.find_by(name: user_input)
+  if cashier
+    puts "\nCashier has serviced #{cashier.total_customers} customers."
+  else
+    puts "I'm sorry, I didn't find that one"
+  end
 end
 
 main_menu

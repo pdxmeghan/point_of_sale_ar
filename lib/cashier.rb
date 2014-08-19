@@ -12,5 +12,11 @@ class Cashier < ActiveRecord::Base
     end
     customer_total
   end
+
+  def self.list_cashiers
+    Cashier.all.each do  |cashier|
+      puts cashier.name
+    end
+  end
 end
 
