@@ -8,5 +8,6 @@ describe Product do
     test_product = Product.create({name: 'Dawn', price: 3.99})
     test_cart1 = Cart.create({product_id: test_product.id, quantity: 5, checkout_id: test_checkout.id})
     test_cart2 = Cart.create({product_id: test_product.id, quantity: 5, checkout_id: test_checkout.id})
+    expect(test_product.carts).to eq [test_cart1, test_cart2]
   end
 end
